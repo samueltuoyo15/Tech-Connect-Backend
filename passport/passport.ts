@@ -3,6 +3,15 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import supabase from "../supabase/supabase"; 
 import dotenv from "dotenv";
 dotenv.config();
+
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  profile_picture?: string;
+  gender: string;
+}
+
 passport.use(
   new GoogleStrategy(
     {
@@ -35,7 +44,7 @@ passport.use(
           existingUser = data;
         }
 
-        return done(null, existingUser);
+        return done(null, existingUseras User);
       } catch (error:any) {
         return done(error, false);
       }
@@ -44,7 +53,7 @@ passport.use(
 );
 
 
-passport.serializeUser((user: any, done) => {
+passport.serializeUser((user: User, done) => {
   done(null, user.id);
 });
 
