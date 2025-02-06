@@ -11,14 +11,14 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 
 router.post("/signup", signUpWithEmailAndPassword);
 router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-router.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/" }), (req: Response, res: Response) => {
+router.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/" }), (req: Request, res: Response) => {
     if (!req.user) {
       return res.redirect("http://localhost:5173/login"); 
     }
     
     const user = req.user as Express.User; 
     const token = jwt.sign(
-      { userId: req.user.id, email: req.user.email },
+      { userId: user?.id, email: user?.email },
       JWT_SECRET,
       { expiresIn: "7d" } 
     );
