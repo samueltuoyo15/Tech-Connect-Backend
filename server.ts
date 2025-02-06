@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import session from "express-session";
 import passport from "./passport/passport";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 import authRoute from "./routes/authRoute";
@@ -10,6 +11,7 @@ import authRoute from "./routes/authRoute";
 const server: Application = express();
 server.use(cors());
 server.use(helmet());
+server.use(cookieParser());
 server.use(session({
   secret: process.env.SESSION_SECRET!,
   resave: false,
