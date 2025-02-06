@@ -10,8 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@supabase/supabase-js": "^2.48.1",
-    "@types/cookie-parser": "^1.4.8",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -24,11 +22,14 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.48.1",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.1",
     "@types/helmet": "^0.0.48",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^22.13.1",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",

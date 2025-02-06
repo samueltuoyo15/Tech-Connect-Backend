@@ -1,11 +1,10 @@
 import {Request, Response} from "express";
 import passport from "passport";
-import {Strategy as googleStrategy} from "passport-google-oauth20"
 import supabase from "../supabase/supabase";
 
 
 //sign up with email and password 
-export const signUpWithEmailAndPassword = async (req: Request, res: Response): Promise<any> => {
+export default const signUpWithEmailAndPassword = async (req: Request, res: Response): Promise<any> => {
   const {username, email, password, gender} : {username: string; email: string; password: string, gender: string} = req.body;
   
   if(!gender || !username || !email || !password ){
@@ -56,38 +55,4 @@ export const signUpWithEmailAndPassword = async (req: Request, res: Response): P
     return res.status(500).json({message: "an error occurred in the server"});
   }
 };
-
-//google sign up 
-export const signUpWithGoogle = async (req: Request, res: Response): Promise<any> => {
-  try{
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: "http://localhost:5000/auth/google/callback", 
-      },
-     })
-   if(error || !data.url){
-     console.error(error);
-     res.status(400).json({message: "error signIn with google"})
-   }
-   return res.redirect(data.url as string);
-  }catch(error:any){
-    console.error(error)
-    res.status(500).json({message: "error signInng up"})
-  }
-}
-
-//sign out
-export const signOut = async (req: Request, res: Response): Promise<any> => {
-  try{
-    const {error} = await supabase.auth.signOut();
-    if(error){
-      console.error(error)
-      res.status(500).json({message: "error occurred when singning out"});
-    }
-  }catch(error: any){
-    console.error(error)
-   res.status(500).json({message: "error occurred when singning out"});
-  }
-}
 
