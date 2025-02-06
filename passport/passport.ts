@@ -23,10 +23,10 @@ passport.use(
 
         if (!existingUser) {
           const { data, error } = await supabase
-            .from("users")
-            .insert({ email, username, profile_picture, gender: "unknown" })
-            .select()
-            .single();
+         .from("users")
+         .insert({ email, username, profile_picture, gender: "unknown" })
+         .select("id, email, username, profile_picture")
+         .single();
 
           if (error) return done(error, false);
 
