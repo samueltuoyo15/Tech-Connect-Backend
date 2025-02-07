@@ -15,9 +15,11 @@ router.get("/auth/google/callback", passport.authenticate("google", { failureRed
     if (!req.user) {
       return res.redirect("http://localhost:5173/login"); 
     }
+    
+    const user = req.user as User
    
     const token = jwt.sign(
-      { userId: req.user?.id, email: req.user?.email },
+      { userId: user?.id, email: user?.email },
       JWT_SECRET,
       { expiresIn: "7d" } 
     );

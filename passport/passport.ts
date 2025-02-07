@@ -4,6 +4,7 @@ import supabase from "../supabase/supabase";
 import dotenv from "dotenv";
 dotenv.config();
 
+
 passport.use(
   new GoogleStrategy(
     {
@@ -19,21 +20,25 @@ passport.use(
 
         if (!email) return done(new Error("No email found"), false);
 
-        let { data: existingUser } = await supabase.from("users").select("*").eq("email", email).single();
+        let { data: existingUser } = await supabase
+          .from("users")
+          .select("id, email, username, profile_picture")
+          .eq("email", email)
+          .single();
 
         if (!existingUser) {
           const { data, error } = await supabase
-         .from("users")
-         .insert({ email, username, profile_picture, gender: "unknown" })
-         .select("id, email, username, profile_picture")
-         .single();
+            .from("users")
+            .insert({ email, username, profile_picture, gender: "unknown" })
+            .select("id, email, username, profile_picture")
+            .single();
 
           if (error) return done(error, false);
 
           existingUser = data;
         }
 
-        return done(null, existingUser);
+        return done(null, existingUser as User);
       } catch (error: any) {
         return done(error, false);
       }
@@ -41,13 +46,18 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => {
+passport.serializeUser((user: any, done) => {
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const { data: user, error } = await supabase.from("users").select("*").eq("id", id).single();
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", id)
+      .single();
+
     if (error) return done(error, null);
     done(null, user);
   } catch (error: any) {
