@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import signUpWithEmailAndPassword from "../controllers/authController";
 import passport from "../passport/passport";
+import {User} from "../utils/type";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
