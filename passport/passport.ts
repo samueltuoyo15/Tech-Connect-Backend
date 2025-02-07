@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import supabase from "../supabase/supabase"; 
-import {User} from "../utils/type";
+import {User} from "../utils/type"
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -31,7 +31,7 @@ passport.use(
         if (!existingUser) {
           const { data: newUser, error: insertError } = await supabase
             .from("users")
-            .insert({ email, username, profile_picture, gender: "unknown" })
+            .insert({ email, username, profile_picture, gender: "unknown", bio: ""})
             .select("id, email, username, profile_picture")
             .single();
 
@@ -40,7 +40,7 @@ passport.use(
           existingUser = newUser;
         }
 
-        return done(null, existingUser);
+        return done(null, existingUser as User);
       } catch (error: any) {
         return done(error, false);
       }
@@ -48,7 +48,7 @@ passport.use(
   )
 );
 
-passport.serializeUser((user: User, done) => {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
@@ -61,10 +61,11 @@ passport.deserializeUser(async (id: number, done) => {
       .single();
 
     if (error) return done(error, null);
-    done(null, user);
+    done(null, user as Express.User); 
   } catch (error: any) {
     done(error, null);
   }
 });
+
 
 export default passport;

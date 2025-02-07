@@ -1,75 +1,129 @@
+import { Request, Response } from "express";
+import {User} from "../utils/type";
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import supabase from "../supabase/supabase"; 
+import supabase from "../supabase/supabase";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
 dotenv.config();
 
-// Define User type if not already defined
-interface User {
-  id: string;
-  email: string;
-  username: string;
-  profile_picture?: string;
-}
+// Sign up with email and password
+export const signUpWithEmailAndPassword = async (req: Request, res: Response): Promise<any> => {
+  const { username, email, password, gender }: { username: string; email: string; password: string; gender: string } = req.body;
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL!,
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const email = profile.emails?.[0]?.value;
-        const username = profile.displayName;
-        const profile_picture = profile.photos?.[0]?.value;
-
-        if (!email) return done(new Error("No email found"), false);
-
-        let { data: existingUser } = await supabase
-          .from("users")
-          .select("id, email, username, profile_picture")
-          .eq("email", email)
-          .single();
-
-        if (!existingUser) {
-          const { data, error } = await supabase
-            .from("users")
-            .insert({ email, username, profile_picture, gender: "unknown" })
-            .select("id, email, username, profile_picture")
-            .single();
-
-          if (error) return done(error, false);
-
-          existingUser = data;
-        }
-
-        return done(null, existingUser as User);
-      } catch (error: any) {
-        return done(error, false);
-      }
-    }
-  )
-);
-
-passport.serializeUser((user: User, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id: string, done) => {
-  try {
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) return done(error, null);
-    done(null, user);
-  } catch (error: any) {
-    done(error, null);
+  if (!gender || !username || !email || !password) {
+    return res.status(400).json({ message: "Username, gender, password, and email must not be empty" });
   }
-});
 
-export default passport;
+  if (typeof gender !== "string") {
+    return res.status(400).json({ message: "Invalid gender format, it must be a string" });
+  }
+  if (typeof username !== "string" || typeof email !== "string" || typeof password !== "string" || password.length > 20) {
+    return res.status(400).json({ message: "Password must be a string and not greater than 20 characters" });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ message: "Invalid email format" });
+  }
+
+  if (password.length < 6 || password.length > 20) {
+    return res.status(400).json({ message: "Password must be 6-20 characters long" });
+  }
+  if (username.length < 3 || username.length > 14) {
+    return res.status(400).json({ message: "Username must be 3-14 characters long" });
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Unable to sign up" });
+    }
+
+    const { error: dbError } = await supabase.from("users").insert({
+      id: data.user?.id,
+      email,
+      bio: "",
+      profile_picture: "",
+      username: username,
+      gender: gender,
+    });
+
+    if (dbError) {
+      console.error(dbError);
+      return res.status(500).json({ message: "Error saving new user to database" });
+    }
+
+    return res.status(200).json({ message: "Successfully signed up", user: data?.user });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({ message: "An error occurred in the server" });
+  }
+};
+
+// Sign out
+export const signOut = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error occurred when signing out" });
+    }
+
+    return res.status(200).json({ message: "Successfully signed out" });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({ message: "Error occurred when signing out" });
+  }
+};
+
+// Get Google authenticated user
+const JWT_SECRET = process.env.JWT_SECRET as string;
+export const getAuthUser = async (req: Request, res: Response): Promise<any> => {
+  const token = req.cookies?.auth_token;
+
+  if (!token) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; email: string };
+    return res.json({ authenticated: true, user: decoded });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+// Google logout
+export const googleLogout = async (req: Request, res: Response): Promise<any> => {
+  res.clearCookie("auth_token");
+  return res.json({ message: "Logged out successfully" });
+};
+
+// Google callback authentication
+export const googleCallbackAuth = [
+  passport.authenticate("google", { failureRedirect: "/" }),
+  async (req: Request, res: Response): Promise<void> => {
+    const user = req.user as User;
+
+    if (!user) {
+      return res.redirect("http://localhost:5173/login");
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.redirect("http://localhost:5173/");
+  }
+];
