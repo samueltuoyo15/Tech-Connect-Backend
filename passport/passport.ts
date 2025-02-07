@@ -2,8 +2,8 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import supabase from "../supabase/supabase"; 
 import dotenv from "dotenv";
-dotenv.config();
 
+dotenv.config();
 
 passport.use(
   new GoogleStrategy(
@@ -20,25 +20,27 @@ passport.use(
 
         if (!email) return done(new Error("No email found"), false);
 
-        let { data: existingUser } = await supabase
+        let { data: existingUser, error: fetchError } = await supabase
           .from("users")
           .select("id, email, username, profile_picture")
           .eq("email", email)
           .single();
 
+        if (fetchError) return done(fetchError, false);
+
         if (!existingUser) {
-          const { data, error } = await supabase
+          const { data: newUser, error: insertError } = await supabase
             .from("users")
             .insert({ email, username, profile_picture, gender: "unknown" })
             .select("id, email, username, profile_picture")
             .single();
 
-          if (error) return done(error, false);
+          if (insertError) return done(insertError, false);
 
-          existingUser = data;
+          existingUser = newUser;
         }
 
-        return done(null, existingUser as User);
+        return done(null, existingUser);
       } catch (error: any) {
         return done(error, false);
       }
@@ -46,11 +48,11 @@ passport.use(
   )
 );
 
-passport.serializeUser((user: any, done) => {
+passport.serializeUser((user: User, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id: string, done) => {
+passport.deserializeUser(async (id: number, done) => {
   try {
     const { data: user, error } = await supabase
       .from("users")
