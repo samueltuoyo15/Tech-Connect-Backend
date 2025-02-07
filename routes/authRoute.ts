@@ -1,6 +1,6 @@
-import {Router} from "express";
 import {signUpWithEmailAndPassword, signOut, getAuthUser, googleLogout, googleCallbackAuth} from "../controllers/authController";
 import passport from "../passport/passport";
+import {Router} from "express";
 
 const router = Router();
 router.post("/signup", signUpWithEmailAndPassword);
