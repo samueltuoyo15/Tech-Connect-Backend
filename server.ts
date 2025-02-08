@@ -10,6 +10,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const server: Application = express()
+connectDatabase()
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }))
 server.use(cors())
@@ -23,7 +24,7 @@ server.use(session({
 server.use(passport.initialize())
 server.use(passport.session())
 server.use("/api", authRoute)
-connectDatabase()
+
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`)
 })

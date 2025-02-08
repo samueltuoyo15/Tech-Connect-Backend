@@ -1,4 +1,3 @@
-import User from '';
 import mongoose, {Schema, Document} from "mongoose"
 
 export interface UserInterface extends Document{
@@ -15,7 +14,7 @@ export interface UserInterface extends Document{
   googleId?: string;
 }
 
-const userSchema = new Schema<UserInterface>(
+const userSchema: Schema = new Schema<UserInterface>(
   {
   fullname: {
     type: String,
@@ -60,5 +59,4 @@ const userSchema = new Schema<UserInterface>(
  {timestamps: true},
 )
 
-const user = mongoose.model<UserInterface>("User", userSchema)
-export default user
+export default mongoose.model<UserInterface>("User", userSchema)
