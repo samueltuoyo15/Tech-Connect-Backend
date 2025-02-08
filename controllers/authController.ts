@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import {User} from "../utils/type";
-import passport from "passport";
+import passport from "../passport/passport";
 import supabase from "../supabase/supabase";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -105,10 +105,11 @@ export const googleLogout = async (req: Request, res: Response): Promise<any> =>
 export const googleCallbackAuth = [
   passport.authenticate("google", { failureRedirect: "/" }),
   async (req: Request, res: Response): Promise<void> => {
+  console.log(req.user)
     const user = req.user as User;
 
     if (!user) {
-      return res.redirect("http://localhost:5173/login");
+      return res.redirect("http://localhost:5173/login"); 
     }
 
     const token = jwt.sign(
