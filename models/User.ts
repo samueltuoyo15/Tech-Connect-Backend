@@ -11,6 +11,8 @@ export interface UserInterface extends Document{
   bio: string;
   joined: Date;
   isVerified: boolean;
+  resetToken: string;
+  resetTokenExpiry: Date;
   googleId?: string;
 }
 
@@ -49,6 +51,14 @@ const userSchema: Schema = new Schema<UserInterface>(
   isVerified: {
     type: Boolean,
     default: false
+  },
+  resetToken: {
+    type: String,
+    default: null
+  },
+  resetTokenExpiry: {
+    type: date,
+    default: Date.now()
   },
   googleId: {
     type: String,
