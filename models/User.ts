@@ -7,20 +7,25 @@ export interface UserInterface extends Document{
   password?: string;
   profile_picture: string;
   gender: string;
-  isAdmin: false;
+  isAdmin: boolean;
   birthday: string;
   address: string;
   locale: string;
   bio: string;
   joined: Date;
   isVerified: boolean;
-  resetToken: string;
-  resetTokenExpiry: Date;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
   googleId?: string;
 }
 
 const userSchema: Schema = new Schema<UserInterface>(
   {
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
   fullname: {
     type: String,
     required: true,
@@ -60,13 +65,13 @@ const userSchema: Schema = new Schema<UserInterface>(
     default: null
   },
   resetTokenExpiry: {
-    type: date,
-    default: Date.now()
+    type: Date,
+    default: null
   },
   googleId: {
     type: String,
     unique: true,
-    parse: true
+    sparse: true
   },
   birthday: {
     type: String,
@@ -79,6 +84,11 @@ const userSchema: Schema = new Schema<UserInterface>(
   address: {
     type: String,
     default: ""
+  },
+  
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
 },
  {timestamps: true},
