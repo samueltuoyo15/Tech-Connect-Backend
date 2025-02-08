@@ -1,71 +1,36 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import supabase from "../supabase/supabase"; 
-import {User} from "../utils/type"
+import User from '../models/User';
 import dotenv from "dotenv";
 dotenv.config();
 
 passport.use(
   new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL!,
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const email = profile.emails?.[0]?.value;
-        const username = profile.displayName;
-        const profile_picture = profile.photos?.[0]?.value;
-
-        if (!email) return done(new Error("No email found"), false);
-
-        let { data: existingUser, error: fetchError } = await supabase
-          .from("users")
-          .select("id, email, username, profile_picture")
-          .eq("email", email)
-          .single();
-
-        if (fetchError) return done(fetchError, false);
-
-        if (!existingUser) {
-          const { data: newUser, error: insertError } = await supabase
-            .from("users")
-            .insert({ email, username, profile_picture, gender: "unknown", bio: ""})
-            .select("id, email, username, profile_picture")
-            .single();
-
-          if (insertError) return done(insertError, false);
-
-          existingUser = newUser;
-        }
-
-        return done(null, existingUser as User);
-      } catch (error: any) {
-        return done(error, false);
+  { clientID: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET, callbackURL: process.env.GOOGLE_CALLBACK_URL, scope[
+        "https://www.googleapis.com/auth/user.birthday.read",
+        "https://www.googleapis.com/auth/user.phonenumbers.read",
+        "https://www.googleapis.com/auth/user.addresses.read"
+    ]},
+  async (accessToken, refreshToekn, profile, done) => {
+    try{
+      let user = await user.findOne({email: profile.emails?.[0].value})
+      
+      if(!user){
+        await user.create({
+          username: profile.displayName,
+          email: profile.emails?.[0].value,
+          profile_picture: profile.photos?.[0].value,
+          gender: profile.gender
+          fullname: profile.name?.givenName + "" + profile.name?.familyName,
+          address: profile.addresses?.[0]?. formattedValue,
+          locale: profile._json.locale,
+          birthday: profile._json.birthday,
+          isVerified: true,
+        })
       }
     }
-  )
-);
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id: string, done) => {
-  try {
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) return done(error, null);
-    done(null, user as Express.User); 
-  } catch (error: any) {
-    done(error, null);
-  }
-});
-
-
+   }
+ )
+)
+  
 export default passport;

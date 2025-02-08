@@ -8,6 +8,9 @@ export interface UserInterface extends Document{
   profile_picture: string;
   gender: string;
   isAdmin: false;
+  birthday: string;
+  address: string;
+  locale: string;
   bio: string;
   joined: Date;
   isVerified: boolean;
@@ -64,6 +67,18 @@ const userSchema: Schema = new Schema<UserInterface>(
     type: String,
     unique: true,
     parse: true
+  },
+  birthday: {
+    type: String,
+    default: "Not Specified"
+  },
+  locale: {
+    type: String,
+    default: "",
+  },
+  address: {
+    type: String,
+    default: ""
   },
 },
  {timestamps: true},
