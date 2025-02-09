@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
 import sendEmail from "../utils/sendVerificationEmail"
 import User from "../models/User"
-import signUpSchema from "../validators/authValidator"
-import loginSchema from "../validators/authValidator"
+import {signUpSchema, loginSchema} from "../validators/authValidator"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import dotenv from "dotenv"
@@ -11,7 +10,7 @@ dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
-export const googleCallback = async (req: Request, res: Response) => {
+export const googleCallback = async (req: Request, res: Response): Promise<any> => {
   try {
     const user = req.user as any
     if (!user) return res.status(400).json({ message: "Google auth failed during the process" })
@@ -24,7 +23,7 @@ export const googleCallback = async (req: Request, res: Response) => {
   }
 }
 
-export const emailSignUp = async (req: Request, res: Response) => {
+export const emailSignUp = async (req: Request, res: Response): Promise<any>  => {
   const { error } = signUpSchema.validate(req.body)
   if (error) return res.status(400).json({ message: error.details[0].message })
 
@@ -56,7 +55,7 @@ export const emailSignUp = async (req: Request, res: Response) => {
   }
 }
 
-export const emailSignIn = async (req: Request, res: Response) => {
+export const emailSignIn = async (req: Request, res: Response): Promise<any>  => {
   const { error } = loginSchema.validate(req.body)
   if (error) return res.status(400).json({ message: error.details[0].message })
 
@@ -76,7 +75,7 @@ export const emailSignIn = async (req: Request, res: Response) => {
   }
 }
 
-export const verifyEmail = async (req: Request, res: Response) => {
+export const verifyEmail = async (req: Request, res: Response): Promise<any>  => {
   const { token } = req.query
   if (!token) return res.status(400).send("<h2>Missing token</h2>")
 
@@ -96,7 +95,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
   }
 }
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword = async (req: Request, res: Response): Promise<any>  => {
   try {
     const { email } = req.body
     const user = await User.findOne({ email })
@@ -113,7 +112,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 }
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword = async (req: Request, res: Response): Promise<any>  => {
   try {
     const { token } = req.query
     const { newPassword } = req.body
@@ -133,7 +132,7 @@ export const resetPassword = async (req: Request, res: Response) => {
   }
 }
 
-export const getCurrentUser = async (req: Request, res: Response) => {
+export const getCurrentUser = async (req: Request, res: Response): Promise<any>  => {
   try {
     const user = await User.findById(req.user?.id)
     if (!user) return res.status(404).json({ message: "User not found" })
@@ -145,6 +144,6 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   }
 }
 
-export const logout = async (_req: Request, res: Response) => {
+export const logout = async (_req: Request, res: Response): Promise<any>  => {
   res.status(200).json({ message: "Logged out successfully" })
 }

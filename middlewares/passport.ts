@@ -30,7 +30,7 @@ passport.use(
         await newUser.save()
         done(null, newUser)
       } catch (error) {
-        done(error, null)
+        done(error, undefined)
       }
     }
   )
@@ -45,6 +45,8 @@ passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id)
     done(null, user)
   } catch (error) {
-    done(error, null)
+    done(error, undefined)
   }
 })
+
+export default passport
