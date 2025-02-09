@@ -1,16 +1,7 @@
 import { Router } from "express"
 import passport from "passport"
-import {
-  googleCallback,
-  emailSignUp,
-  emailSignIn,
-  verifyEmail,
-  forgotPassword,
-  resetPassword,
-  getCurrentUser,
-  logout
-} from "../controllers/authController"
-
+import { googleCallback, emailSignUp, emailSignIn, verifyEmail, forgotPassword, resetPassword,  getCurrentUser, logout} from "../controllers/authController"
+import {authenticateJWT} from "../middlewares/getCurrentUser"
 const router = Router()
 
 router.post("/signup", emailSignUp)
@@ -18,7 +9,7 @@ router.post("/signin", emailSignIn)
 router.get("/verify-email", verifyEmail)
 router.post("/forgot-password", forgotPassword)
 router.post("/reset-password", resetPassword)
-router.get("auth//me", getCurrentUser)
+router.get("auth/me", authenticateJWT, getCurrentUser)
 router.post("/logout", logout)
 
 router.get("auth/google", passport.authenticate("google", { scope: ["profile", "email"] }))
