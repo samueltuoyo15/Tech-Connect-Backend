@@ -134,7 +134,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<any>  
 
 export const getCurrentUser = async (req: Request, res: Response): Promise<any>  => {
   try {
-    const user = await User.findById(req.user?.id)
+    const user = await User.findById(req.user?._id)
     if (!user) return res.status(404).json({ message: "User not found" })
 
     res.status(200).json(user)
@@ -144,6 +144,6 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<any> 
   }
 }
 
-export const logout = async (_req: Request, res: Response): Promise<any>  => {
+export const logout = async (req: Request, res: Response): Promise<any>  => {
   res.status(200).json({ message: "Logged out successfully" })
 }
