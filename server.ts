@@ -23,7 +23,7 @@ server.use(session({
 }))
 server.use(passport.initialize())
 server.use(passport.session())
-server.use("/api", authRoute)
+server.use("/api/auth", authRoute)
 
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`)
