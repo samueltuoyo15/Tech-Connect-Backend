@@ -1,22 +1,21 @@
-import { Request, Response, NextFunction } from "express"
+import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
-import User  from "../models/User"
+import User from "../models/User"
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
-
-export const authenticateJWT = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const token = req.header("Authorization")?.split(" ")[1]
-  if (!token) return next(new Error("Unauthorized"))
-
+export const getCurrentUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string }
-    const user = await User.findById(decoded.id).select("-password")
-    if (!user) return next(new Error("User not found"))
+    const token = req.cookies.authToken
+    if (!token) return res.status(401).json({ message: "Unauthorized" })
 
-    req.user = user
-    next()
-  } catch (error) {I 
-    next(new Error("Invalid token"))
+    const decoded: any = jwt.verify(token, JWT_SECRET)
+    const user = await User.findById(decoded.id).select("-password")
+    if (!user) return res.status(404).json({ message: "User not found" })
+
+    res.status(200).json({ user })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: "Error fetching user data" })
   }
 }

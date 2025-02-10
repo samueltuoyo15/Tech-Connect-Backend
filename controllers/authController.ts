@@ -16,7 +16,14 @@ export const googleCallback = async (req: Request, res: Response): Promise<any> 
     if (!user) return res.status(400).json({ message: "Google auth failed during the process" })
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" })
-    res.status(200).json({ token, user })
+      res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+  })
+res.status(200).json({ message: "Google sign-in successful" })
+
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Google authentication error" })
@@ -160,6 +167,7 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<any> 
   }
 }
 
-export const logout = async (req: Request, res: Response): Promise<any>  => {
+export const logout = async (req: Request, res: Response): Promise<any> => {
+  res.clearCookie("authToken", { httpOnly: true, secure: true, sameSite: "Strict" })
   res.status(200).json({ message: "Logged out successfully" })
 }

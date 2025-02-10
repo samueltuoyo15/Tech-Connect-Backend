@@ -1,7 +1,7 @@
 import { Router } from "express"
 import passport from "passport"
 import { googleCallback, emailSignUp, emailSignIn, verifyEmail, forgotPassword, resetPassword, getCurrentUser, logout } from "../controllers/authController"
-import { authenticateJWT } from "../middlewares/getCurrentUser"
+import {getCurrentUser} from "../middlewares/getCurrentUser"
 
 const router = Router()
 
