@@ -15,7 +15,7 @@ const sendWelcomeEmail = async (email: string, subject: string, text: string) =>
   })
   
   await transporter.sendMail({
-    from: `Tech Connect <${process.env.GMAIL_USER || ""}>`,
+    from: `Tech Connect ${process.env.GMAIL_USER!}`,
     to: email,
     subject,
     text,
