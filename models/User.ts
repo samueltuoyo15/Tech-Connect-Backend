@@ -8,7 +8,6 @@ export interface UserInterface extends Document{
   password?: string;
   profile_picture: string;
   gender: string;
-  isAdmin: boolean;
   birthday: string;
   address: string;
   locale: string;
@@ -86,11 +85,7 @@ const userSchema: Schema = new Schema<UserInterface>(
     type: String,
     default: ""
   },
-  
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
+
 },
  {timestamps: true},
 )

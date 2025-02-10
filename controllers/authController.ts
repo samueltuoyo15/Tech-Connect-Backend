@@ -68,7 +68,13 @@ export const emailSignIn = async (req: Request, res: Response): Promise<any>  =>
     if (!passwordMatch) return res.status(400).json({ message: "Invalid password. Please check and try again" })
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" })
-    res.status(200).json({ token, user })
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 *1000,
+    })
+    res.status(200).json({ message: user signed successfully})
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Error signing in" })
@@ -135,7 +141,19 @@ export const resetPassword = async (req: Request, res: Response): Promise<any>  
 export const getCurrentUser = async (req: Request, res: Response): Promise<any>  => {
   try {
     if (!req.user) return res.status(404).json({ message: "User not found" })
-    res.status(200).json(req.user)
+    res.status(200).json({token, user: {
+      id: user?._id,
+      email: user?.email,
+      fullname: user?.fullname,
+      username: user?.username,
+      profile_picture: user?.profile_picture,
+      gender: user?.gender,
+      bio: user?.bio,
+      address: user?.address,
+      birthday: user?.birthday,
+      locale: user?.locale,
+      joined: user?.joined,
+    }})
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Error fetching user data" })

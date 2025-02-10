@@ -16,7 +16,7 @@ export const authenticateJWT = async (req: Request, res: Response, next: NextFun
 
     req.user = user
     next()
-  } catch (error) {
+  } catch (error) {I 
     next(new Error("Invalid token"))
   }
 }
