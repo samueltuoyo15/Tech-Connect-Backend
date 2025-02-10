@@ -9,13 +9,13 @@ const sendEmail = async (email: string, subject: string, text: string) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS,
+      user: process.env.GMAIL_USER!,
+      pass: process.env.GMAIL_PASS!,
     },
   })
   
   await transporter.sendMail({
-    from: `Tech Connect <${process.env.GMAIL_USER>}`,
+    from: `Tech Connect <${process.env.GMAIL_USER!>}`,
     to: email,
     subject,
     text,
