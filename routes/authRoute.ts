@@ -1,8 +1,6 @@
 import { Router } from "express"
 import passport from "passport"
 import { googleCallback, emailSignUp, emailSignIn, verifyEmail, forgotPassword, resetPassword, logout } from "../controllers/authController"
-import {verifyUser} from "../middlewares/getCurrentUser"
-
 const router = Router()
 
 router.post("/signup", emailSignUp)
