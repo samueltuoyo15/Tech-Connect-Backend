@@ -1,9 +1,10 @@
 {
-  "name": "chatappbackend",
+  "name": "techconnect",
   "version": "1.0.0",
   "main": "server.ts",
   "scripts": {
-    "dev": "nodemon server.ts"
+    "dev": "nodemon server.ts",
+    "start": "ts-node server.ts"
   },
   "keywords": [],
   "author": "OritseWeyinmi Samuel Tuoyo",

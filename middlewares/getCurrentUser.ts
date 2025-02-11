@@ -4,7 +4,7 @@ import User from "../models/User"
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
-export const getCurrentUser = async (req: Request, res: Response): Promise<any> => {
+export const verifyUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const token = req.cookies.authToken
     if (!token) return res.status(401).json({ message: "Unauthorized" })
