@@ -170,18 +170,18 @@ export const logout = async (req: Request, res: Response): Promise<any> => {
 }
 
 export const deleteAccount = async (req: Request, res: Response): Promise<any> => {
-  const {email} = req.params
-  if(!email || email.trim().length <= 0) return res.status(400).json({message: "please provide a valid email"})
+  const {userId} = (req as any).user?.id
+  if(!userId || userId.trim().length <= 0) return res.status(400).json({message: "please provide a valid email"})
   
   try{
-  const user = await User.findOneAndDelete({email})
+  const user = await User.findByIdAndDelete({userId})
   if(!user) return res.status(404).json({message: "User doesn't exist"})
  
   res.clearCookie("authToken", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
   res.clearCookie("userData", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
-  res.json({message: "User deleted successfully "})
+  return res.status(200).json({message: "User deleted successfully "})
   } catch(error: any){
     console.error("error deleting user", error)
-    res.status(500).json({message: "Failed to delete user"})
+    return res.status(500).json({message: "Failed to delete user"})
   }
 }
