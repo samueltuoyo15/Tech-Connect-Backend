@@ -77,7 +77,7 @@ export const emailSignIn = async (req: Request, res: Response): Promise<any>  =>
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" })
     res.cookie("authToken", token, {
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 *1000,
     })
     res.cookie("userData", JSON.stringify({
@@ -93,8 +93,8 @@ export const emailSignIn = async (req: Request, res: Response): Promise<any>  =>
       locale: user?.locale,
       joined: user?.joined,
     }), {
-      secure: process.env.NODE_ENV === "production,
-      sameSite: "Strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 *1000,
     })
     res.status(200).json({ message: "user signed successfully"})
