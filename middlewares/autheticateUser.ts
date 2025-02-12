@@ -8,7 +8,7 @@ interface AuthRequest extends Request {
   user?: any
 }
 
-export const authenticateUser = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authenticateUser = (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   const token = req.cookies.authToken
 
   if (!token) {
