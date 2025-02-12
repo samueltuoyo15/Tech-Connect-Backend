@@ -76,11 +76,11 @@ export const emailSignIn = async (req: Request, res: Response): Promise<any>  =>
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" })
     res.cookie("authToken", token, {
-      secure: process.env.NODE_ENVIRONMENT === "production",
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 *1000,
     })
-    res.cookie({"userData", JSON.stringify({
+    res.cookie("userData", JSON.stringify({
       id: user?._id,
       email: user?.email,
       fullname: user?.fullname,
@@ -93,7 +93,7 @@ export const emailSignIn = async (req: Request, res: Response): Promise<any>  =>
       locale: user?.locale,
       joined: user?.joined,
     }), {
-      secure: true,
+      secure: process.env.NODE_ENV === "production,
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 *1000,
     })
