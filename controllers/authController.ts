@@ -76,6 +76,7 @@ export const emailSignIn = async (req: Request, res: Response): Promise<any>  =>
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" })
     res.cookie("authToken", token, {
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 *1000,
