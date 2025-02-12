@@ -168,3 +168,20 @@ export const logout = async (req: Request, res: Response): Promise<any> => {
   res.clearCookie("userData", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
   res.status(200).json({ message: "Logged out successfully" })
 }
+
+export const deleteAccount = async (req: Request, res: Response) Promise<any> => {
+  const {email} = req.params
+  if(!email || email.trim().length <= 0){
+    res.status(400).json({message: "please provide a valid email"})
+  }
+  
+  const user = await User.findOneAndDelete({email})
+  if(!user){
+    res.status(400).json({message: "User doesn't exist"})
+    return
+  }
+ 
+  res.clearCookie("authToken", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
+  res.clearCookie("userData", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
+  res.json({message: "User deleted successfully "})
+}
