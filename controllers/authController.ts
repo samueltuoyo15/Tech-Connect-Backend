@@ -163,7 +163,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<any>  
 
   
 export const logout = async (req: Request, res: Response): Promise<any> => {
-  res.clearCookie("authToken", { httpOnly: true, secure: true, sameSite: "Strict" })
-  res.clearCookie("userData", { httpOnly: true, secure: true, sameSite: "Strict" })
+  res.clearCookie("authToken", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
+  res.clearCookie("userData", { secure: process.env.NODE_ENV === "production", sameSite: "strict" })
   res.status(200).json({ message: "Logged out successfully" })
 }
