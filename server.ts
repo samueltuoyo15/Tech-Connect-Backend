@@ -10,7 +10,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const server: Application = express()
-server.use(cors({origin: "http://localhost:5173"}))
+server.use(cors({origin: "http://localhost:5173", credentials: true,}))
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }))
 server.use(helmet())
