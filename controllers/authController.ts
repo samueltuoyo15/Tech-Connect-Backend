@@ -33,8 +33,7 @@ export const googleCallback = async (req: Request, res: Response): Promise<any> 
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-   res.status(200).json({ message: "Google sign-in successful" })
-
+     res.redirect("http://localhost:5173/")
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Google authentication error" })
