@@ -15,13 +15,20 @@ passport.use(
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {
-        const existingUser = await User.findOne({ googleId: profile.id })
-        if (existingUser) return done(null, existingUser)
-
+       let existingUser = await User.findOne({ googleId: profile.id })
+        if (!existingUser) {
+          existingUser = await User.findOne({email: profile.emails?.[0].value})
+        } if(existingUser){
+          existingUser.googleId = profile.id
+          await existingUser.save()
+          return done(null, existingUser)
+        }
+        
+        else{
         const newUser = new User({
           googleId: profile.id,
           username: profile.displayName,
-          fullname: profile.name?.givenName + "" + profile.name?.familyName,
+          fullname: `${profile.name?.givenName} ${profile.name?.familyName}`,
           email: profile.emails?.[0].value,
           isVerified: true,
           profilePicture: profile.photos?.[0].value
@@ -29,8 +36,8 @@ passport.use(
 
         await newUser.save()
         done(null, newUser)
-      } catch (error) {
-        done(error, undefined)
+      }} catch (error) {
+        done(error, null)
       }
     }
   )
@@ -45,8 +52,10 @@ passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id)
     done(null, user)
   } catch (error) {
-    done(error, undefined)
+    done(error, null)
   }
 })
 
 export default passport
+
+
