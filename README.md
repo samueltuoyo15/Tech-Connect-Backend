@@ -4,8 +4,9 @@
 
 ### This Documentation is categorized into various section as follows 👇👇
 
-1. Authentication Flow
+## 1. Authentication Flow
 
-*Sign Up*
+## *Sign Up*
+
 ### This section explains how to integrate the sign up endpoint 
-*Endpoint*: ```link nsnsnzn```
+## *Endpoint*: ```http://localhost:5000```
