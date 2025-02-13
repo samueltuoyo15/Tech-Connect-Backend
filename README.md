@@ -1,23 +1,78 @@
-# Tech Connect
+# 🚀 Tech Connect
 
-*This is the official Tech Connect Backend Api Documentation im writing for the  Frontend Developer of Tech Connect [Emmanuel](https://github.com/emess2g)*
+* 📌This is the official Tech Connect Backend Api Documentation im writing for the  Frontend Developer of Tech Connect [Emmanuel](https://github.com/emess2g)*
+---
 
-*Before we go any further please u will have to clone this repository into your computer or pc* 👇👇👇
-On your terminal run this command 👇👇👇
+## 🛠 API Documentation  
 
-```bash
-git clone https://github.com/samueltuoyo15/Tech-Connect-Backend.git
-```
-*After successfully cloning the repo into your computer run tbis command 👇*
+### 1️⃣ Authentication Flow  
 
-```bash
-docker omo i dont even know how it works 
-```
-*This Documentation is categorized into various section as follows 👇👇*
+#### **Sign Up**  
+📌 This section explains how to integrate the sign-up endpoint.  
 
-1. Authentication Flow*
+- **Endpoint**:  
+  ```http
+  POST http://localhost:5000/api/auth/signup
+  ```
 
-### Sign Up
+- **Request Body** *(JSON)*:  
+  ```json
+  {
+    "username": "johndoe",
+    "email": "johndoe@example.com",
+    "password": "your-secure-password"
+  }
+  ```
 
-This section explains how to integrate the sign up endpoint 
-*Endpoint*: ```http://localhost:5000```
+- **Response (Success)**:  
+  ```json
+  {
+    "message": "User registered successfully",
+    "user": {
+      "id": "12345",
+      "username": "johndoe",
+      "email": "johndoe@example.com"
+    }
+  }
+  ```
+
+- **Response (Error)**:  
+  ```json
+  {
+    "error": "Email already exists"
+  }
+  ```
+
+---
+
+### 2️⃣ Sign In  
+📌 This endpoint allows a user to log in.  
+
+- **Endpoint**:  
+  ```http
+  POST http://localhost:5000/api/auth/login
+  ```
+
+- **Request Body** *(JSON)*:  
+  ```json
+  {
+    "email": "johndoe@example.com",
+    "password": "your-secure-password"
+  }
+  ```
+
+- **Response (Success)**:  
+  ```json
+  {
+    "message": "Login successful",
+    "token": "your-jwt-token",
+    "user": {
+      "id": "12345",
+      "username": "johndoe",
+      "email": "johndoe@example.com"
+    }
+  }
+  ```
+
+
+
