@@ -22,7 +22,7 @@
     "email": "johndoe@example.com",
     "password": "your-secure-password",
     "fullname": "your-full-name",
-    "gender"; "male"
+    "gender": "male"
   }
   ```
 
@@ -72,9 +72,9 @@
       "bio": "",
       "profile_picture": "",
       "address": "",
-      "birthday": ",
-      "locale": ",
-      "joined": current date time,
+      "birthday": "",
+      "locale": "",
+      "joined": "current date time",
     },
   }
   ```
