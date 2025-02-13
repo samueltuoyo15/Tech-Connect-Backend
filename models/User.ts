@@ -38,8 +38,9 @@ const userSchema: Schema = new Schema<UserInterface>(
   },
   password: {
     type: String,
-    required: true
+    required: function(){ return !this.googleId}
   },
+  
   profile_picture: {
     type: String,
     default: ""

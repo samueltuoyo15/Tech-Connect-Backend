@@ -22,7 +22,18 @@ export const googleCallback = async (req: Request, res: Response): Promise<any> 
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
   })
-res.status(200).json({ message: "Google sign-in successful" })
+    res.cookie("userData", JSON.stringify({
+      id: user?._id,
+      email: user?.email,
+      fullname: user?.fullname,
+      username: user?.username,
+      profile_picture: user?.profilePicture,
+    }), {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+   res.status(200).json({ message: "Google sign-in successful" })
 
   } catch (error) {
     console.error(error)
