@@ -12,7 +12,7 @@
 
 - **Endpoint**:  
   ```http
-  POST http://localhost:5000/api/auth/signup
+  POST https://tech-connect-backend-vrz5.onrender.com/api/auth/signup
   ```
 
 - **Request Body** *(JSON)*:  
@@ -50,7 +50,7 @@
 
 - **Endpoint**:  
   ```http
-  POST http://localhost:5000/api/auth/login
+  POST https://tech-connect-backend-vrz5.onrender.com/api/auth/login
   ```
 
 - **Request Body** *(JSON)*:  
