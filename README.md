@@ -20,19 +20,16 @@
   {
     "username": "johndoe",
     "email": "johndoe@example.com",
-    "password": "your-secure-password"
+    "password": "your-secure-password",
+    "fullname": "your-full-name",
+    "gender"; "male"
   }
   ```
 
 - **Response (Success)**:  
   ```json
   {
-    "message": "User registered successfully",
-    "user": {
-      "id": "12345",
-      "username": "johndoe",
-      "email": "johndoe@example.com"
-    }
+    "message": "User registered successfully please kindly signup",
   }
   ```
 
@@ -69,10 +66,23 @@
     "user": {
       "id": "12345",
       "username": "johndoe",
+      fullname: "your-full-name"
       "email": "johndoe@example.com"
-    }
+      "gender": "male",
+      "bio": "",
+      "profile_picture": "",
+      "address": "",
+      "birthday": ",
+      "locale": ",
+      "joined": current date time,
+    },
   }
   ```
-
+- **Response (Error)**:  
+  ```json
+  {
+    "error": "Email does not exist yet"
+  }
+  ```
 
 
