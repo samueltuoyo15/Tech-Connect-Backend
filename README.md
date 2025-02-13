@@ -66,7 +66,7 @@
     "user": {
       "id": "12345",
       "username": "johndoe",
-      fullname: "your-full-name"
+      fullname: "your-full-name",
       "email": "johndoe@example.com"
       "gender": "male",
       "bio": "",
