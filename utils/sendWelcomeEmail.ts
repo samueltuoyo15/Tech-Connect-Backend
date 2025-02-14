@@ -2,7 +2,7 @@ import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
 
-const sendWelcomeEmail = async (email: string, subject: string, text: string) => {
+export const sendWelcomeEmail = async (email: string, subject: string, text: string) => {
   if(!email || !subject || !text) return "please subject, text and email must not be empty"
  
   try{
@@ -26,4 +26,3 @@ const sendWelcomeEmail = async (email: string, subject: string, text: string) =>
   }
 }
 
-export sendWelcomeEmail
