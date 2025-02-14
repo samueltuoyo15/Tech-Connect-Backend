@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
-import {sendEmail, sendWelcomeEmail} from "../utils/sendVerificationEmail"
+import {sendEmail} from "../utils/sendVerificationEmail"
+import {sendWelcomeEmail} from "../utils/sendWelcomeEmail"
 import User from "../models/User"
 import {signUpSchema, loginSchema} from "../validators/authValidator"
 import jwt from "jsonwebtoken"
