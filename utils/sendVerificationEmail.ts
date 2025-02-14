@@ -25,4 +25,4 @@ const sendEmail = async (email: string, subject: string, text: string) => {
   }
 }
 
-export default sendEmail
+export sendEmail
